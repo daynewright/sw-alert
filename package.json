@@ -1,0 +1,22 @@
+{
+  "name": "southwest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "sw": "cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@testing-library/cypress": "^9.0.0",
+    "cypress": "^12.5.1",
+    "cypress-terminal-report": "^5.0.2",
+    "fs-extra": "^11.1.0",
+    "node-cron": "^3.0.2"
+  },
+  "dependencies": {
+    "twilio": "^4.7.2"
+  }
+}
