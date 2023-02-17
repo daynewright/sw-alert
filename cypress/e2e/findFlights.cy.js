@@ -5,7 +5,7 @@ describe('check flights', () => {
   const flightsBNAFile = 'flightsBNA.json';
   const flightsRobinsonMBJFile = 'flightsRobinsonMBJ.json';
 
-  it.skip('check JAMAICA FLIGHT', () => {
+  it('check Wight/Hancock JAMAICA FLIGHT', () => {
     cy.configureCypressTestingLibrary({ testIdAttribute: 'data-qa' })
 
     cy.visit('https://mobile.southwest.com/air/booking/shopping');
@@ -143,7 +143,7 @@ describe('check flights', () => {
     });
   });
 
-  it.skip('check NASHVILLE FLIGHT', () => {
+  it('check NASHVILLE FLIGHT', () => {
    cy.configureCypressTestingLibrary({ testIdAttribute: 'data-qa' })
 
     cy.visit('https://mobile.southwest.com/air/booking/shopping');

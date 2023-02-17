@@ -10,8 +10,10 @@ const flightsMBJFile = 'flightsMBJ.json';
 const flightsBNAFile = 'flightsBNA.json';
 const flightsRobinsonMBJFile = 'flightsRobinsonMBJ.json';
 
+console.log('running script on 30 minute interval\n');
+
 // Schedule tasks to be run on the server.
-cron.schedule('* * * * *', async function() {
+cron.schedule('*/30 * * * *', async function() {
   console.log('running cypress... 🧪\n');
   
   cypress.run({ headed: true, browser: 'chrome' })
