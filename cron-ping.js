@@ -3,9 +3,12 @@ const cron = require('node-cron');
 const fs = require('fs-extra');
 
 const sendMessage = require('./twilio');
+const numbersToSend = require('./secrets.json').numbersToSend;
+
 
 const flightsMBJFile = 'flightsMBJ.json';
 const flightsBNAFile = 'flightsBNA.json';
+const flightsRobinsonMBJFile = 'flightsRobinsonMBJ.json';
 
 // Schedule tasks to be run on the server.
 cron.schedule('* * * * *', async function() {
@@ -15,41 +18,66 @@ cron.schedule('* * * * *', async function() {
     .then(async (result) => {
       const flightsMBJ = await fs.readJson(flightsMBJFile);
       const flightsBNA = await fs.readJson(flightsBNAFile);
+      const flightsRobinsonMBJ = await fs.readJson(flightsRobinsonMBJFile);
 
       console.log('Current flightsBNA data ✈️:');
       console.log(JSON.stringify(flightsBNA, null, 2));
       console.log('\n-----------\n')
-      console.log('Current flightsMBJ data ✈️:');
+      console.log('Current flightsMBJ Wrights/Hancock data ✈️:');
       console.log(JSON.stringify(flightsMBJ, null, 2));
+      console.log('\n-----------\n')
+      console.log('Current flightsMBJ Robinsons data ✈️:');
+      console.log(JSON.stringify(flightsRobinsonMBJ, null, 2));
 
+      // Check Jamaica flights for Dayne & Scott //
       if (flightsMBJ.updatedPts) {
+        console.log('👍 Jamiaca flight for Wright/Hancocks updated for next check... should send text.\n');
         const message = 
         `The flight to Jamaica 🏝 went from ${flightsMBJ.currentPts} pts to ${flightsMBJ.updatedPts} pts ✈️`;
-        sendMessage(message);
+        sendMessage(message, numbersToSend.filter(n => n.name !== "Kevin"));
     
         await fs.writeJson(flightsMBJFile, {
+          ...flightsBNA,
           previousPts: flightsMBJ.currentPts,
           currentPts: flightsMBJ.updatedPts,
           updatedPts: undefined,
       });
-      console.log('👍 Jamiaca flight updated for next check... should send text.');
       } else {
-        console.log('🚫 No beneficial changes to Jamaica flight, not sending text.');
+        console.log('🚫 No beneficial changes to Jamaica flight for Wright/Hancocks, not sending text.\n');
       }
 
+      // Check Jamaica flights for Kevin //
+      if (flightsRobinsonMBJ.updatedPts) {
+        console.log('👍 Jamiaca flight for Robinsons updated for next check... should send text.\n');
+        const message = 
+        `The flight to Jamaica 🏝 went from ${flightsRobinsonMBJ.currentPts} pts to ${flightsRobinsonMBJ.updatedPts} pts ✈️`;
+        sendMessage(message, numbersToSend.filter(n => n.name === "Kevin"));
+    
+        await fs.writeJson(flightsRobinsonMBJFile, {
+          ...flightsRobinsonMBJ,
+          previousPts: flightsRobinsonMBJ.currentPts,
+          currentPts: flightsRobinsonMBJ.updatedPts,
+          updatedPts: undefined,
+      });
+      } else {
+        console.log('🚫 No beneficial changes to Jamaica flight for Robinsons, not sending text.\n');
+      }
+
+      // Check Nashville flights for all //
       if (flightsBNA.updatedPts) {
+        console.log('👍 Nashville flight updated for check... should send text.\n');
         const message =
         `The flight back to Nashville went from ${flightsBNA.currentPts} pts to ${flightsBNA.updatedPts} pts ✈️`;
-        sendMessage(message);
+        sendMessage(message, numbersToSend);
 
         await fs.writeJson(flightsBNAFile, {
+            ...flightsBNA,
             previousPts: flightsBNA.currentPts,
             currentPts: flightsBNA.updatedPts,
             updatedPts: undefined,
         });
-        console.log('👍 Nashville flight updated for check... should send text.');
       } else {
-        console.log('🚫 No beneficial changes to Nashville flight, not sending text.');
+        console.log('🚫 No beneficial changes to Nashville flight, not sending text.\n');
       }
 
 
